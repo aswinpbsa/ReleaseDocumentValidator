@@ -1,0 +1,11 @@
+{
+  "required_sections": [
+    "RITM ID",
+    "ChaRM RFC ID",
+    "Normal Change or Admin Change ID",
+    "Select the UAT scenario",
+    "UAT system or UAT systems involved",
+    "UAT Description",
+    "UAT final result Evidence"
+  ]
+}
