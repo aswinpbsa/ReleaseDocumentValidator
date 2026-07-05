@@ -57,7 +57,6 @@ async def validate_document(file: UploadFile = File(...)):
 
 # ----------------------------------------------------
 # Copilot Studio + Power Automate Endpoint
-# Body = document dynamic token
 # ----------------------------------------------------
 @app.post("/validate-document-json")
 async def validate_document_json(document: dict = Body(...)):
@@ -92,10 +91,24 @@ async def validate_document_json(document: dict = Body(...)):
             filename_result["documentType"]
         )
 
+        # Build validation summary
+        summary_lines = []
+
+        for result in validation_result["results"]:
+            summary_lines.append(
+                f"• {result['field']} - {result['status']}: {result['message']}"
+            )
+
+        summary = "\n".join(summary_lines)
+
         return {
             "filename": filename,
-            "filenameValidation": filename_result,
-            "validation": validation_result
+            "documentType": filename_result["documentType"],
+            "filenameStatus": filename_result["status"],
+            "filenameMessage": filename_result["message"],
+            "overallStatus": validation_result["overallStatus"],
+            "governanceScore": validation_result["governanceScore"],
+            "summary": summary
         }
 
     except Exception as ex:
