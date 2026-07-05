@@ -2,7 +2,7 @@ import os
 import shutil
 import base64
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Body
 from pydantic import BaseModel
 
 from validators.filename_validator import validate_filename
@@ -31,7 +31,6 @@ def home():
     }
 
 
-# Existing endpoint (Swagger / File Upload)
 @app.post("/validate-document")
 async def validate_document(file: UploadFile = File(...)):
 
@@ -56,28 +55,7 @@ async def validate_document(file: UploadFile = File(...)):
     }
 
 
-# New endpoint for Copilot + Power Automate
+# DEBUG ENDPOINT
 @app.post("/validate-document-json")
-async def validate_document_json(request: DocumentRequest):
-
-    upload_path = os.path.join("uploads", request.name)
-
-    file_bytes = base64.b64decode(request.contentBytes)
-
-    with open(upload_path, "wb") as f:
-        f.write(file_bytes)
-
-    filename_result = validate_filename(request.name)
-
-    extracted = extractor.extract(upload_path)
-
-    validation_result = validator.validate(
-        extracted,
-        filename_result["documentType"]
-    )
-
-    return {
-        "filename": request.name,
-        "filenameValidation": filename_result,
-        "validation": validation_result
-    }
+async def validate_document_json(payload: dict = Body(...)):
+    return payload
